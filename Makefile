@@ -12,7 +12,11 @@ DOCKER_IMAGE_NAME=biarms/gogs
 DOCKER_IMAGE_VERSION=0.11.91
 DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)-linux-$(ARCH)$(BETA_VERSION)
 
-default: create-and-push-manifests
+default: build
+
+build: tags
+
+push: create-and-push-manifests
 
 tags: check-binaries
 	docker pull gogs/gogs:${DOCKER_IMAGE_VERSION}
@@ -21,7 +25,7 @@ tags: check-binaries
 	docker tag "gogs/gogs-rpi:${DOCKER_IMAGE_VERSION}" "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}-linux-arm32-v7${BETA_VERSION}"
 	docker tag "gogs/gogs-rpi:${DOCKER_IMAGE_VERSION}" "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}-linux-arm64-v8${BETA_VERSION}"
 
-push-tags: check-docker-login tags
+push-tags: check-docker-login docker-login-if-possible tags
 	docker push "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}-linux-amd64${BETA_VERSION}"
 	docker push "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}-linux-arm32-v7${BETA_VERSION}"
 	docker push "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}-linux-arm64-v8${BETA_VERSION}"
@@ -40,7 +44,7 @@ create-manifests: push-tags
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}"
 
-create-and-push-manifests: check-docker-login push-tags create-manifests docker-login-if-possible
+create-and-push-manifests: push-tags create-manifests
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}"
 
