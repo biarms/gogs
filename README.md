@@ -1,6 +1,7 @@
 # biarms/gogs
 
 [![Travis build status](https://api.travis-ci.org/biarms/gogs.svg?branch=master)](https://travis-ci.org/biarms/gogs)
+[![CircleCI build status](https://circleci.com/gh/biarms/gogs.svg?style=svg)](https://circleci.com/gh/biarms/gogs)
 
 ## Overview
 The goal of this very simple project is only to publish a docker manifest merging both [Gogs](https://hub.docker.com/r/gogs/gogs/) and [Gogs-rpi](https://hub.docker.com/r/gogs/gogs-rpi) docker images repositories.
