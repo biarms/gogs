@@ -34,9 +34,8 @@ check-binaries:
 	@ DOCKER_CLI_EXPERIMENTAL=enabled docker manifest --help | grep "docker manifest COMMAND" > /dev/null || (echo "docker manifest is needed. Consider upgrading docker" && exit 4)
 	@ DOCKER_CLI_EXPERIMENTAL=enabled docker version -f '{{.Client.Experimental}}' | grep "true" > /dev/null || (echo "docker experimental mode is not enabled" && exit 5)
 	# Debug info
+	@ echo "DOCKER_REGISTRY: ${DOCKER_REGISTRY}"
 	@ echo "DOCKER_IMAGE_TAGNAME: ${DOCKER_IMAGE_TAGNAME}"
-	# @ echo "BUILD_DATE: ${BUILD_DATE}"
-	# @ echo "VCS_REF: ${VCS_REF}"
 
 check-buildx: check-binaries
 	# Next line will fail if docker server can't be contacted
