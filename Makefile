@@ -36,11 +36,8 @@ check-binaries:
 	# Debug info
 	@ echo "DOCKER_REGISTRY: ${DOCKER_REGISTRY}"
 	@ echo "DOCKER_IMAGE_TAGNAME: ${DOCKER_IMAGE_TAGNAME}"
-
-check-buildx: check-binaries
 	# Next line will fail if docker server can't be contacted
 	docker version
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx version
 
 check-docker-login: check-binaries
 	@ if [[ "${DOCKER_USERNAME}" == "" ]]; then \
