@@ -13,9 +13,9 @@ DOCKER_USERNAME ?=
 DOCKER_PASSWORD ?=
 # BETA_VERSION: Nothing, or '-beta-123'
 BETA_VERSION ?=
-DOCKER_IMAGE_NAME=biarms/gogs
-DOCKER_IMAGE_VERSION=0.11.91
-DOCKER_IMAGE_TAGNAME=$(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_VERSION)-linux-$(ARCH)$(BETA_VERSION)
+DOCKER_IMAGE_NAME = biarms/gogs
+DOCKER_IMAGE_VERSION = 0.11.91
+DOCKER_IMAGE_TAGNAME = ${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}${BETA_VERSION}
 
 default: all
 
@@ -43,7 +43,14 @@ check-buildx: check-binaries
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx version
 
 check-docker-login: check-binaries
-	@ if [[ "${DOCKER_USERNAME}" == "" ]]; then echo "DOCKER_USERNAME and DOCKER_PASSWORD env variables are mandatory for this kind of build"; exit -1; fi
+	@ if [[ "${DOCKER_USERNAME}" == "" ]]; then \
+	    echo "DOCKER_USERNAME and DOCKER_PASSWORD env variables are mandatory for this kind of build"; \
+	    echo "Consider one of these alternatives: "; \
+	    echo "  - make build"; \
+	    echo "  - DOCKER_USERNAME=biarms DOCKER_PASSWORD=******** BETA_VERSION='-local-test-pushed-on-docker-io' make"; \
+	    echo "  - DOCKER_USERNAME=biarms DOCKER_PASSWORD=******** make circleci-local-build"; \
+	    exit -1; \
+	  fi
 
 docker-login-if-possible: check-binaries
 	if [[ ! "${DOCKER_USERNAME}" == "" ]]; then echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin; fi
